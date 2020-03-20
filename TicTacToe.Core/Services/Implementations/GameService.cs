@@ -28,13 +28,14 @@ namespace TicTacToe.Core.Services.Implementations
         
         public GameService()
         {
-            CurrentGameStatus = StartNewGame();
+            StartNewGame();
         }
 
         public GameStatus StartNewGame()
         {
             _field = new Field();
-            return new GameStatus {FieldState = GetFieldState()};
+            CurrentGameStatus = new GameStatus {FieldState = GetFieldState()};
+            return CurrentGameStatus;
         }
 
         public GameStatus Move(Position position, Mark mark)

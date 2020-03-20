@@ -7,3 +7,15 @@ C:\Users\Пользователь\source\repos\TicTacToe\obj\Debug\TicTacToe.Pro
 C:\Users\Пользователь\source\repos\TicTacToe\obj\Debug\TicTacToe.csproj.GenerateResource.cache
 C:\Users\Пользователь\source\repos\TicTacToe\obj\Debug\TicTacToe.exe
 C:\Users\Пользователь\source\repos\TicTacToe\obj\Debug\TicTacToe.pdb
+C:\Users\Dmitry\Source\Repos\TicTacToe\bin\Debug\TicTacToe.exe.config
+C:\Users\Dmitry\Source\Repos\TicTacToe\bin\Debug\TicTacToe.exe
+C:\Users\Dmitry\Source\Repos\TicTacToe\bin\Debug\TicTacToe.pdb
+C:\Users\Dmitry\Source\Repos\TicTacToe\bin\Debug\TicTacToe.Core.dll
+C:\Users\Dmitry\Source\Repos\TicTacToe\bin\Debug\TicTacToe.Core.pdb
+C:\Users\Dmitry\Source\Repos\TicTacToe\obj\Debug\TicTacToe.csprojAssemblyReference.cache
+C:\Users\Dmitry\Source\Repos\TicTacToe\obj\Debug\TicTacToe.MainFrame.resources
+C:\Users\Dmitry\Source\Repos\TicTacToe\obj\Debug\TicTacToe.Properties.Resources.resources
+C:\Users\Dmitry\Source\Repos\TicTacToe\obj\Debug\TicTacToe.csproj.GenerateResource.cache
+C:\Users\Dmitry\Source\Repos\TicTacToe\obj\Debug\TicTacToe.csproj.CopyComplete
+C:\Users\Dmitry\Source\Repos\TicTacToe\obj\Debug\TicTacToe.exe
+C:\Users\Dmitry\Source\Repos\TicTacToe\obj\Debug\TicTacToe.pdb

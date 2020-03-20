@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Windows.Forms;
+using TicTacToe.Core.Services.Implementations;
 
 namespace TicTacToe
 {
@@ -16,7 +14,10 @@ namespace TicTacToe
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new MainFrame());
+
+            var gameService = new GameService();
+            var aiService = new RandomAiPlayerService(gameService.WinConditions);
+            Application.Run(new MainFrame(gameService, aiService));
         }
     }
 }

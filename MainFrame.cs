@@ -2,428 +2,109 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
+using TicTacToe.Core.Domain;
+using TicTacToe.Core.Models;
+using TicTacToe.Core.Services;
+using TicTacToe.Extensions;
 
 namespace TicTacToe
 {
     public partial class MainFrame : Form
     {
-        List<Button> freeButtons;
-        List<Button> occupiedButtons = new List<Button>();
-        Rules rules = new Rules();
-        public MainFrame()
+        private readonly IGameService _gameService;
+        private readonly IAiPlayerService _aiPlayerService;
+
+        private readonly Dictionary<Position, Button> _positionToButtonMap;
+        private readonly Dictionary<Button, Position> _buttonToPositionMap;
+        private readonly Mark _playerMark;
+        private readonly Mark _aiMark;
+
+        public MainFrame(IGameService gameService, IAiPlayerService aiPlayerService)
         {
             InitializeComponent();
             CenterToScreen();
-            freeButtons = new List<Button>
+
+            _gameService = gameService;
+            _aiPlayerService = aiPlayerService;
+
+            _positionToButtonMap = new Dictionary<Position, Button>
             {
-                buttonTopCenter, buttonTopLeft, buttonTopRight,
-                buttonMidCenter, buttonMidLeft, buttonMidRight,
-                buttonBotRight, buttonBotLeft, buttonBotCenter
+                {Position.TopLeft, buttonTopLeft }, {Position.TopCenter, buttonTopCenter}, {Position.TopRight, buttonTopRight},
+                {Position.MidLeft, buttonMidLeft }, {Position.MidCenter, buttonMidCenter}, {Position.MidRight, buttonMidRight},
+                {Position.BotLeft, buttonBotLeft }, {Position.BotCenter, buttonBotCenter}, {Position.BotRight, buttonBotRight},
             };
+            _buttonToPositionMap = _positionToButtonMap.ToDictionary(x => x.Value, x => x.Key);
+
+            _playerMark = Mark.Cross;
+            _aiMark = Mark.Circle;
+
+            _gameService.StartNewGame();
+            DrawCurrentState();
         }
 
-        #region Buttons Clicks
-        private void AnyButton_Click(object sender, EventArgs e)
+        private void OnButtonClick(object sender, EventArgs e)
         {
-            ButtonChangeText(sender);
-        }
-        #endregion
-
-        #region Private Helpers
-        private void ButtonChangeText(object sender)
-        {
-            Button b = (Button)sender;
-            if (b.Text == string.Empty)
+            var clickedButton = (Button)sender;
+            if (clickedButton.Text == string.Empty)
             {
-                b.Text = "X";
-                freeButtons.Remove(b);
-                occupiedButtons.Add(b);
+                var playerMove = _buttonToPositionMap[clickedButton];
+                var playerMoveResult = _gameService.Move(playerMove, _playerMark);
+                if (CheckIfGameIsFinished(playerMoveResult, out var playerMessage))
+                {
+                    OnGameEnded(playerMessage);
+                    return;
+                }
 
-                string checkIfEnd = rules.CheckWinCondition(occupiedButtons, freeButtons);
-                if (checkIfEnd == "human")
+                var aiMove = _aiPlayerService.MakeTurn(_aiMark, _gameService.CurrentGameStatus);
+                var aiMoveResult = _gameService.Move(aiMove, _aiMark);
+                if (CheckIfGameIsFinished(aiMoveResult, out var aiMessage))
                 {
-                    MessageBox.Show("Congratulations, human! You have achieved a glorious victory!");
-                    RefreshButtonsState();
+                    OnGameEnded(aiMessage);
+                    return;
                 }
-                else if (checkIfEnd == "draw")
-                {
-                    MessageBox.Show("That's a draw! What a pity...");
-                    RefreshButtonsState();
-                }
-                else if (checkIfEnd == "continue" && freeButtons.Any())
-                {
-                    ComputerTurn();
-                    checkIfEnd = rules.CheckWinCondition(occupiedButtons, freeButtons);
-                    if (checkIfEnd == "computer")
-                    {
-                        MessageBox.Show("This AI was too hard for you to handle. Good luck next time!");
-                        RefreshButtonsState();
-                    }
-                }
+
+                DrawCurrentState();
             }
         }
 
-        private void RefreshButtonsState()
+        private void OnGameEnded(string message)
         {
-            freeButtons = new List<Button>() {buttonMidCenter, buttonMidLeft, buttonMidRight, buttonTopCenter, buttonTopLeft, buttonTopRight,
-            buttonBotRight, buttonBotLeft, buttonBotCenter};
-            occupiedButtons = new List<Button>();
-            foreach (Button button in freeButtons)
-            {
-                button.Text = string.Empty;
-            }
+            DrawCurrentState();
+            MessageBox.Show(message);
+            _gameService.StartNewGame();
+            DrawCurrentState();
         }
 
-        private void ComputerTurn()
+        private void OnExitMenuItemClick(object sender, EventArgs e)
         {
-            ComputerButtonSearch cbs = new ComputerButtonSearch();
-            bool turnComplete = false;
-            ComputerFirstTurn(cbs, out turnComplete);
-            if (turnComplete == true)
-            {
-                return;
-            }
-            else
-            {
-                ComputerFindsBestLine(cbs);
-            }
-
+            Close();
         }
 
-        private void ComputerFindsBestLine(ComputerButtonSearch cbs)
+        private bool CheckIfGameIsFinished(GameStatus gameStatus, out string endGameMessage)
         {
-            bool turnComplete = false;
-            bool canWin = true;
-            List<Button> tmpOccupiedButtons = new List<Button>(occupiedButtons);
-            int buttonWithO;
-            while (!turnComplete)
+            if (gameStatus.IsGameFinished)
             {
-                cbs.Text4Search = "O";
-                buttonWithO = tmpOccupiedButtons.FindIndex(cbs.TextContainsString);
-                if (buttonWithO >= 0 && canWin == true)
-                {
-                    ComputerFirstOptionTurn(tmpOccupiedButtons, cbs, out turnComplete);
-                    if (turnComplete)
-                    {
-                        return;
-                    }
-                    else
-                    {
-                        canWin = false;
-                    }
-                }
-                if (buttonWithO >= 0 && canWin == false)
-                {
-                    ComputerSecondOptionTurn(tmpOccupiedButtons, buttonWithO, cbs, out turnComplete);
-                    if (turnComplete)
-                    {
-                        return;
-                    }
-                    tmpOccupiedButtons.Remove(tmpOccupiedButtons[buttonWithO]);
-                }
+                if (gameStatus.Winner == _playerMark)
+                    endGameMessage = "Congratulations, human! You have achieved a glorious victory!";
+                else if (gameStatus.Winner == _aiMark)
+                    endGameMessage = "This AI was too hard for you to handle. Good luck next time!";
                 else
-                {
-                    Random computerChoice = new Random();
-                    int computerTurn = computerChoice.Next(0, freeButtons.Count);
-                    freeButtons[computerTurn].Text = "O";
-                    occupiedButtons.Add(freeButtons[computerTurn]);
-                    freeButtons.Remove(freeButtons[computerTurn]);
-                    turnComplete = true;
-                }
-            }
-        }
+                    endGameMessage = "That's a draw! What a pity...";
 
-        private void ComputerFirstOptionTurn(List<Button> tmpOccupiedButtons, ComputerButtonSearch cbs, out bool turnComplete)
-        {
-            if (ComputerTryWinOrCounter(tmpOccupiedButtons, cbs, "X", "O"))
-            {
-                turnComplete = true;
+                return true;
             }
-            else if (ComputerTryWinOrCounter(tmpOccupiedButtons, cbs, "O", "X"))
-            {
-                turnComplete = true;
-            }
-            else
-            {
-                turnComplete = false;
-            }
-        }
 
-        private bool ComputerTryWinOrCounter(List<Button> tmpOccupiedButtons, ComputerButtonSearch cbs, string buttonTextexclude, string textForSearch) 
-        {
-            //buttonTextexclude X - win, O - counter
-            //textForSearch O - win, X - counter 
-            bool turnComplete = false;
-            int buttonWithText = 0;
-            List<Button> tmpOccupiedButtons2 = new List<Button>(tmpOccupiedButtons);
-            cbs.Text4Search = buttonTextexclude;
-            tmpOccupiedButtons2.RemoveAll(cbs.TextContainsString);
-
-            while (tmpOccupiedButtons2.Any())
-            {
-                if (tmpOccupiedButtons2[buttonWithText].Name.Contains("Bot"))
-                {
-                    cbs.Name4Search = "Bot";
-                    turnComplete = BestHorizontalAndVerticalTurn(cbs, textForSearch);
-                    if (turnComplete)
-                    {
-                        return true;
-                    }
-                }
-                if (tmpOccupiedButtons2[buttonWithText].Name.Contains("Mid"))
-                {
-                    cbs.Name4Search = "Mid";
-                    turnComplete = BestHorizontalAndVerticalTurn(cbs, textForSearch);
-                    if (turnComplete)
-                    {
-                        return true;
-                    }
-                }
-                if (tmpOccupiedButtons2[buttonWithText].Name.Contains("Top"))
-                {
-                    cbs.Name4Search = "Top";
-                    turnComplete = BestHorizontalAndVerticalTurn(cbs, textForSearch);
-                    if (turnComplete)
-                    {
-                        return true;
-                    }
-                }
-                if (tmpOccupiedButtons2[buttonWithText].Name.Contains("Left"))
-                {
-                    cbs.Name4Search = "Left";
-                    turnComplete = BestHorizontalAndVerticalTurn(cbs, textForSearch);
-                    if (turnComplete)
-                    {
-                        return true;
-                    }
-                }
-                if (tmpOccupiedButtons2[buttonWithText].Name.Contains("Center"))
-                {
-                    cbs.Name4Search = "Center";
-                    turnComplete = BestHorizontalAndVerticalTurn(cbs, textForSearch);
-                    if (turnComplete)
-                    {
-                        return true;
-                    }
-                }
-                if (tmpOccupiedButtons2[buttonWithText].Name.Contains("Right"))
-                {
-                    cbs.Name4Search = "Right";
-                    turnComplete = BestHorizontalAndVerticalTurn(cbs, textForSearch);
-                    if (turnComplete)
-                    {
-                        return true;
-                    }
-                }
-                if (ButtonIsDiagonal(tmpOccupiedButtons2[buttonWithText]))
-                {
-                    turnComplete = BestDiagonalTurn(cbs, textForSearch);
-                    if (turnComplete)
-                    {
-                        return true;
-                    }
-                }
-                if (tmpOccupiedButtons2.Any())
-                {
-                    tmpOccupiedButtons2.Remove(tmpOccupiedButtons2[buttonWithText]);
-                }
-            }
+            endGameMessage = string.Empty;
             return false;
         }
 
-        private void ComputerSecondOptionTurn(List<Button> tmpOccupiedButtons, int buttonWithO, ComputerButtonSearch cbs, out bool turnComplete)
+        private void DrawCurrentState()
         {
-            if (tmpOccupiedButtons[buttonWithO].Name.Contains("Bot"))
+            foreach (var cell in _gameService.CurrentGameStatus.FieldState)
             {
-                cbs.Name4Search = "Bot";
-                turnComplete = HorizontalAndVerticalTurn(cbs);
-                if (turnComplete)
-                {
-                    return;
-                }
+                var button = _positionToButtonMap[cell.Key];
+                button.Text = cell.Value.ToText();
             }
-            if (tmpOccupiedButtons[buttonWithO].Name.Contains("Mid"))
-            {
-                cbs.Name4Search = "Mid";
-                turnComplete = HorizontalAndVerticalTurn(cbs);
-                if (turnComplete)
-                {
-                    return;
-                }
-            }
-            if (tmpOccupiedButtons[buttonWithO].Name.Contains("Top"))
-            {
-                cbs.Name4Search = "Top";
-                turnComplete = HorizontalAndVerticalTurn(cbs);
-                if (turnComplete)
-                {
-                    return;
-                }
-            }
-            if (tmpOccupiedButtons[buttonWithO].Name.Contains("Left"))
-            {
-                cbs.Name4Search = "Left";
-                turnComplete = HorizontalAndVerticalTurn(cbs);
-                if (turnComplete)
-                {
-                    return;
-                }
-            }
-            if (tmpOccupiedButtons[buttonWithO].Name.Contains("Center"))
-            {
-                cbs.Name4Search = "Center";
-                turnComplete = HorizontalAndVerticalTurn(cbs);
-                if (turnComplete)
-                {
-                    return;
-                }
-            }
-            if (tmpOccupiedButtons[buttonWithO].Name.Contains("Right"))
-            {
-                cbs.Name4Search = "Right";
-                turnComplete = HorizontalAndVerticalTurn(cbs);
-                if (turnComplete)
-                {
-                    return;
-                }
-            }
-            if (ButtonIsDiagonal(tmpOccupiedButtons[buttonWithO]))
-            {
-                turnComplete = DiagonalTurn();
-                if (turnComplete)
-                {
-                    return;
-                }
-            }
-            else
-            {
-                turnComplete = false;
-            }
-        }
-
-        private bool HorizontalAndVerticalTurn(ComputerButtonSearch cbs)
-        {
-            List<Button> rowOrColumnFreeButtons = freeButtons.FindAll(cbs.NameContainsString);
-            if (rowOrColumnFreeButtons.Count == 2)
-            {
-                rowOrColumnFreeButtons[0].Text = "O";
-                occupiedButtons.Add(rowOrColumnFreeButtons[0]);
-                freeButtons.Remove(rowOrColumnFreeButtons[0]);
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-
-        private bool BestHorizontalAndVerticalTurn(ComputerButtonSearch cbs, string textForSearch)
-        {
-            cbs.Text4Search = textForSearch;
-            List<Button> rowOrColumnFreeButtons = freeButtons.FindAll(cbs.NameContainsString); //на условном боте 1 фри кнопка
-            List<Button> allOccupiedBySomeoneButtons = occupiedButtons.FindAll(cbs.TextContainsString); //все кнопки с O
-            List<Button> rowOrColumnOccupiedBySomeoneButtons = allOccupiedBySomeoneButtons.FindAll(cbs.NameContainsString); //на условном боте 2 кнопки с O
-            if (rowOrColumnFreeButtons.Count == 1 && rowOrColumnOccupiedBySomeoneButtons.Count == 2)
-            {
-                rowOrColumnFreeButtons[0].Text = "O";
-                occupiedButtons.Add(rowOrColumnFreeButtons[0]);
-                freeButtons.Remove(rowOrColumnFreeButtons[0]);
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-
-        private bool ButtonIsDiagonal(Button b)
-        {
-            if (b == buttonBotLeft || b == buttonBotRight || b == buttonTopRight || b == buttonTopLeft || b == buttonMidCenter)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-        private bool DiagonalTurn()
-        {
-            if (buttonBotLeft.Text == buttonMidCenter.Text && buttonBotLeft.Text == buttonTopRight.Text && buttonBotLeft.Text == string.Empty)
-            {
-                buttonMidCenter.Text = "O";
-                occupiedButtons.Add(buttonMidCenter);
-                freeButtons.Remove(buttonMidCenter);
-                return true;
-            }
-            else if (buttonBotRight.Text == buttonMidCenter.Text && buttonBotRight.Text == buttonTopLeft.Text && buttonBotRight.Text == string.Empty)
-            {
-                buttonMidCenter.Text = "O";
-                occupiedButtons.Add(buttonMidCenter);
-                freeButtons.Remove(buttonMidCenter);
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-        private bool BestDiagonalTurn(ComputerButtonSearch cbs, string textForSearch)
-        {
-            List<Button> firstDiagonal = new List<Button>() { buttonBotLeft, buttonMidCenter, buttonTopRight };
-            List<Button> secondDiagonal = new List<Button>() { buttonBotRight, buttonMidCenter, buttonTopLeft };
-
-            cbs.Text4Search = "";
-            List<Button> firstDiagonalFreeButtons = firstDiagonal.FindAll(cbs.TextContainsString);
-            List<Button> secondDiagonalFreeButtons = secondDiagonal.FindAll(cbs.TextContainsString);
-
-            cbs.Text4Search = textForSearch;
-            List<Button> firstDOccupiedBySomeoneButtons = firstDiagonal.FindAll(cbs.TextContainsString);
-            List<Button> secondDOccupiedBySomeoneButtons = secondDiagonal.FindAll(cbs.TextContainsString);
-
-            if (firstDiagonalFreeButtons.Count == 1 && firstDOccupiedBySomeoneButtons.Count == 2)
-            {
-                firstDiagonalFreeButtons[0].Text = "O";
-                occupiedButtons.Add(firstDiagonalFreeButtons[0]);
-                freeButtons.Remove(firstDiagonalFreeButtons[0]);
-                return true;
-            }
-            else if (secondDiagonalFreeButtons.Count == 1 && secondDOccupiedBySomeoneButtons.Count == 2)
-            {
-                secondDiagonalFreeButtons[0].Text = "O";
-                occupiedButtons.Add(secondDiagonalFreeButtons[0]);
-                freeButtons.Remove(secondDiagonalFreeButtons[0]);
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-
-        private void ComputerFirstTurn(ComputerButtonSearch cbs, out bool turnComplete)
-        {
-            cbs.Text4Search = "O";
-            int buttonWithO = occupiedButtons.FindIndex(cbs.TextContainsString);
-            if (buttonWithO < 0)
-            {
-                Random computerChoice = new Random();
-                int computerTurn = computerChoice.Next(0, freeButtons.Count);
-                freeButtons[computerTurn].Text = "O";
-                occupiedButtons.Add(freeButtons[computerTurn]);
-                freeButtons.Remove(freeButtons[computerTurn]);
-                turnComplete = true;
-            }
-            else
-            {
-                turnComplete = false;
-            }
-        }
-        #endregion
-
-        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            Close();
         }
     }
 }

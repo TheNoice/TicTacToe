@@ -340,3 +340,4 @@ ASALocalRun/
 healthchecksdb
 *.cache
 obj/Debug/DesignTimeResolveAssemblyReferencesInput.cache
+bin/Debug/TicTacToe.exe
