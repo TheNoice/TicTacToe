@@ -1,6 +1,6 @@
 ﻿namespace TicTacToe
 {
-    partial class Form1
+    partial class MainFrame
     {
         /// <summary>
         /// Обязательная переменная конструктора.
@@ -197,7 +197,7 @@
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
             this.MinimumSize = new System.Drawing.Size(360, 370);
-            this.Name = "Form1";
+            this.Name = "MainFrame";
             this.Text = "TicTacToe";
             this.tableLayoutPanel1.ResumeLayout(false);
             this.menuStrip1.ResumeLayout(false);

@@ -1,26 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace TicTacToe
 {
-    public partial class Form1 : Form
+    public partial class MainFrame : Form
     {
         List<Button> freeButtons;
         List<Button> occupiedButtons = new List<Button>();
         Rules rules = new Rules();
-        public Form1()
+        public MainFrame()
         {
             InitializeComponent();
             CenterToScreen();
-            freeButtons = new List<Button>() {buttonMidCenter, buttonMidLeft, buttonMidRight, buttonTopCenter, buttonTopLeft, buttonTopRight,
-            buttonBotRight, buttonBotLeft, buttonBotCenter};
+            freeButtons = new List<Button>
+            {
+                buttonTopCenter, buttonTopLeft, buttonTopRight,
+                buttonMidCenter, buttonMidLeft, buttonMidRight,
+                buttonBotRight, buttonBotLeft, buttonBotCenter
+            };
         }
 
         #region Buttons Clicks
