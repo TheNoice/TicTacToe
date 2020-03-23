@@ -5,6 +5,6 @@ namespace TicTacToe.Core.Services
 {
     public interface IAiPlayerService
     {
-        Position MakeTurn(Mark aiMark, GameStatus currentGameStatus);
+        Position MakeTurn(GameStatus currentGameStatus);
     }
 }

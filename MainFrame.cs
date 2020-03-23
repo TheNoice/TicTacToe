@@ -38,7 +38,7 @@ namespace TicTacToe
             _playerMark = Mark.Cross;
             _aiMark = Mark.Circle;
 
-            _gameService.StartNewGame();
+            //_gameService.StartNewGame(); лишний код, тк конструктор сам вызывает этот метод
             DrawCurrentState();
         }
 
@@ -55,7 +55,7 @@ namespace TicTacToe
                     return;
                 }
 
-                var aiMove = _aiPlayerService.MakeTurn(_aiMark, _gameService.CurrentGameStatus);
+                var aiMove = _aiPlayerService.MakeTurn(_gameService.CurrentGameStatus);
                 var aiMoveResult = _gameService.Move(aiMove, _aiMark);
                 if (CheckIfGameIsFinished(aiMoveResult, out var aiMessage))
                 {

@@ -16,7 +16,7 @@ namespace TicTacToe.Core.Services.Implementations
             _winConditions = winConditions;
         }
 
-        public Position MakeTurn(Mark aiMark, GameStatus currentGameStatus)
+        public Position MakeTurn(GameStatus currentGameStatus)
         {
             var possibleTurns = currentGameStatus.FieldState
                 .Where(x => x.Value == Mark.Untouched)

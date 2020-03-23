@@ -47,6 +47,7 @@
     <Compile Include="Services\IGameService.cs" />
     <Compile Include="Services\Implementations\RandomAiPlayerService.cs" />
     <Compile Include="Services\Implementations\GameService.cs" />
+    <Compile Include="Services\Implementations\SmartAiPlayerService.cs" />
     <Compile Include="Utils\GameValidityException.cs" />
     <Compile Include="Domain\Mark.cs" />
     <Compile Include="Models\GameStatus.cs" />

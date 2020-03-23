@@ -19,3 +19,15 @@ C:\Users\Dmitry\Source\Repos\TicTacToe\obj\Debug\TicTacToe.csproj.GenerateResour
 C:\Users\Dmitry\Source\Repos\TicTacToe\obj\Debug\TicTacToe.csproj.CopyComplete
 C:\Users\Dmitry\Source\Repos\TicTacToe\obj\Debug\TicTacToe.exe
 C:\Users\Dmitry\Source\Repos\TicTacToe\obj\Debug\TicTacToe.pdb
+C:\Users\Пользователь\source\repos\TicTacToe\TicTacToe\bin\Debug\TicTacToe.exe.config
+C:\Users\Пользователь\source\repos\TicTacToe\TicTacToe\bin\Debug\TicTacToe.exe
+C:\Users\Пользователь\source\repos\TicTacToe\TicTacToe\bin\Debug\TicTacToe.pdb
+C:\Users\Пользователь\source\repos\TicTacToe\TicTacToe\bin\Debug\TicTacToe.Core.dll
+C:\Users\Пользователь\source\repos\TicTacToe\TicTacToe\bin\Debug\TicTacToe.Core.pdb
+C:\Users\Пользователь\source\repos\TicTacToe\TicTacToe\obj\Debug\TicTacToe.csprojAssemblyReference.cache
+C:\Users\Пользователь\source\repos\TicTacToe\TicTacToe\obj\Debug\TicTacToe.MainFrame.resources
+C:\Users\Пользователь\source\repos\TicTacToe\TicTacToe\obj\Debug\TicTacToe.Properties.Resources.resources
+C:\Users\Пользователь\source\repos\TicTacToe\TicTacToe\obj\Debug\TicTacToe.csproj.GenerateResource.cache
+C:\Users\Пользователь\source\repos\TicTacToe\TicTacToe\obj\Debug\TicTacToe.csproj.CopyComplete
+C:\Users\Пользователь\source\repos\TicTacToe\TicTacToe\obj\Debug\TicTacToe.exe
+C:\Users\Пользователь\source\repos\TicTacToe\TicTacToe\obj\Debug\TicTacToe.pdb

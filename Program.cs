@@ -16,7 +16,7 @@ namespace TicTacToe
             Application.SetCompatibleTextRenderingDefault(false);
 
             var gameService = new GameService();
-            var aiService = new RandomAiPlayerService(gameService.WinConditions);
+            var aiService = new SmartAiPlayerService(gameService.WinConditions);
             Application.Run(new MainFrame(gameService, aiService));
         }
     }
