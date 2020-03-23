@@ -17,15 +17,15 @@ namespace TicTacToe.Core.Services.Implementations
 
         public Position MakeTurn(GameStatus currentGameStatus)
         {
-            List<Position> occupiedPositions = new List<Position>(currentGameStatus.FieldState
+            List<Position> occupiedPositions = currentGameStatus.FieldState
                 .Where(x => x.Value != Mark.Untouched)
                 .Select(x => x.Key)
-                .ToList());
+                .ToList();
 
-            List<Position> freePositions = new List<Position>(currentGameStatus.FieldState
+            List<Position> freePositions = currentGameStatus.FieldState
                 .Where(x => x.Value == Mark.Untouched)
                 .Select(x => x.Key)
-                .ToList());
+                .ToList();
 
             if (occupiedPositions.Count < 2)
             {

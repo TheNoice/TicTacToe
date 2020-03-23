@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using TicTacToe.Core.Domain;
 using TicTacToe.Core.Models;
 using TicTacToe.Core.Services;
+using TicTacToe.Core.Utils;
 using TicTacToe.Extensions;
 
 namespace TicTacToe
@@ -48,7 +50,22 @@ namespace TicTacToe
             if (clickedButton.Text == string.Empty)
             {
                 var playerMove = _buttonToPositionMap[clickedButton];
-                var playerMoveResult = _gameService.Move(playerMove, _playerMark);
+
+                GameStatus playerMoveResult = new GameStatus();
+
+                try
+                {
+                    playerMoveResult = _gameService.Move(playerMove, _playerMark);
+                }
+                catch (GameValidityException ex)
+                {
+                    MessageBox.Show("An error occured. Restarting the game." + ex.Message);
+                    File.AppendAllText($"log-{DateTime.Now.Date}.txt", ex.ToString() + ex.Message);
+                    _gameService.StartNewGame();
+                    DrawCurrentState();
+                    return;
+                }
+
                 if (CheckIfGameIsFinished(playerMoveResult, out var playerMessage))
                 {
                     OnGameEnded(playerMessage);
@@ -56,7 +73,22 @@ namespace TicTacToe
                 }
 
                 var aiMove = _aiPlayerService.MakeTurn(_gameService.CurrentGameStatus);
-                var aiMoveResult = _gameService.Move(aiMove, _aiMark);
+
+                GameStatus aiMoveResult = new GameStatus();
+
+                try
+                {
+                    aiMoveResult = _gameService.Move(aiMove, _aiMark);
+                }
+                catch (GameValidityException ex)
+                {
+                    MessageBox.Show("An error occured. Restarting the game." + ex.Message);
+                    File.AppendAllText($"log-{DateTime.Now.Date}.txt", ex.ToString() + ex.Message);
+                    _gameService.StartNewGame();
+                    DrawCurrentState();
+                    return;
+                }
+
                 if (CheckIfGameIsFinished(aiMoveResult, out var aiMessage))
                 {
                     OnGameEnded(aiMessage);
