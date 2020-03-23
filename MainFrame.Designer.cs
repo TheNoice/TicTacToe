@@ -1,6 +1,6 @@
 ﻿namespace TicTacToe
 {
-    partial class Form1
+    partial class MainFrame
     {
         /// <summary>
         /// Обязательная переменная конструктора.
@@ -80,7 +80,7 @@
             this.buttonBotRight.Size = new System.Drawing.Size(121, 115);
             this.buttonBotRight.TabIndex = 8;
             this.buttonBotRight.UseVisualStyleBackColor = true;
-            this.buttonBotRight.Click += new System.EventHandler(this.AnyButton_Click);
+            this.buttonBotRight.Click += new System.EventHandler(this.OnButtonClick);
             // 
             // buttonBotCenter
             // 
@@ -90,7 +90,7 @@
             this.buttonBotCenter.Size = new System.Drawing.Size(119, 115);
             this.buttonBotCenter.TabIndex = 7;
             this.buttonBotCenter.UseVisualStyleBackColor = true;
-            this.buttonBotCenter.Click += new System.EventHandler(this.AnyButton_Click);
+            this.buttonBotCenter.Click += new System.EventHandler(this.OnButtonClick);
             // 
             // buttonBotLeft
             // 
@@ -100,7 +100,7 @@
             this.buttonBotLeft.Size = new System.Drawing.Size(119, 115);
             this.buttonBotLeft.TabIndex = 6;
             this.buttonBotLeft.UseVisualStyleBackColor = true;
-            this.buttonBotLeft.Click += new System.EventHandler(this.AnyButton_Click);
+            this.buttonBotLeft.Click += new System.EventHandler(this.OnButtonClick);
             // 
             // buttonMidRight
             // 
@@ -110,7 +110,7 @@
             this.buttonMidRight.Size = new System.Drawing.Size(121, 113);
             this.buttonMidRight.TabIndex = 5;
             this.buttonMidRight.UseVisualStyleBackColor = true;
-            this.buttonMidRight.Click += new System.EventHandler(this.AnyButton_Click);
+            this.buttonMidRight.Click += new System.EventHandler(this.OnButtonClick);
             // 
             // buttonMidCenter
             // 
@@ -120,7 +120,7 @@
             this.buttonMidCenter.Size = new System.Drawing.Size(119, 113);
             this.buttonMidCenter.TabIndex = 4;
             this.buttonMidCenter.UseVisualStyleBackColor = true;
-            this.buttonMidCenter.Click += new System.EventHandler(this.AnyButton_Click);
+            this.buttonMidCenter.Click += new System.EventHandler(this.OnButtonClick);
             // 
             // buttonMidLeft
             // 
@@ -130,7 +130,7 @@
             this.buttonMidLeft.Size = new System.Drawing.Size(119, 113);
             this.buttonMidLeft.TabIndex = 3;
             this.buttonMidLeft.UseVisualStyleBackColor = true;
-            this.buttonMidLeft.Click += new System.EventHandler(this.AnyButton_Click);
+            this.buttonMidLeft.Click += new System.EventHandler(this.OnButtonClick);
             // 
             // buttonTopRight
             // 
@@ -140,7 +140,7 @@
             this.buttonTopRight.Size = new System.Drawing.Size(121, 113);
             this.buttonTopRight.TabIndex = 2;
             this.buttonTopRight.UseVisualStyleBackColor = true;
-            this.buttonTopRight.Click += new System.EventHandler(this.AnyButton_Click);
+            this.buttonTopRight.Click += new System.EventHandler(this.OnButtonClick);
             // 
             // buttonTopCenter
             // 
@@ -150,7 +150,7 @@
             this.buttonTopCenter.Size = new System.Drawing.Size(119, 113);
             this.buttonTopCenter.TabIndex = 1;
             this.buttonTopCenter.UseVisualStyleBackColor = true;
-            this.buttonTopCenter.Click += new System.EventHandler(this.AnyButton_Click);
+            this.buttonTopCenter.Click += new System.EventHandler(this.OnButtonClick);
             // 
             // buttonTopLeft
             // 
@@ -160,7 +160,7 @@
             this.buttonTopLeft.Size = new System.Drawing.Size(119, 113);
             this.buttonTopLeft.TabIndex = 0;
             this.buttonTopLeft.UseVisualStyleBackColor = true;
-            this.buttonTopLeft.Click += new System.EventHandler(this.AnyButton_Click);
+            this.buttonTopLeft.Click += new System.EventHandler(this.OnButtonClick);
             // 
             // menuStrip1
             // 
@@ -186,7 +186,7 @@
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
             this.exitToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.exitToolStripMenuItem.Text = "Exit";
-            this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
+            this.exitToolStripMenuItem.Click += new System.EventHandler(this.OnExitMenuItemClick);
             // 
             // Form1
             // 
@@ -197,7 +197,7 @@
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
             this.MinimumSize = new System.Drawing.Size(360, 370);
-            this.Name = "Form1";
+            this.Name = "MainFrame";
             this.Text = "TicTacToe";
             this.tableLayoutPanel1.ResumeLayout(false);
             this.menuStrip1.ResumeLayout(false);
